@@ -2,31 +2,37 @@
   <div>
     <div v-if="loading">Cargando datos de la reserva...</div>
     <div v-else-if="error" style="color: red;">{{ error }}</div>
-    <div v-else>
+    
+    <div v-if="reservation">
       <h2>Detalle de la Reserva</h2>
       <p><strong>Huésped:</strong> {{ reservation.guest.first_name }} {{ reservation.guest.last_name }}</p>
       <p><strong>Habitación:</strong> N° {{ reservation.room.room_number }} ({{ reservation.room.room_type }})</p>
-      <p><strong>Estancia:</strong> Del {{ reservation.check_in_date }} al {{ reservation.check_out_date }}</p>
+      <p><strong>Estancia Planificada:</strong> Del {{ reservation.check_in_date }} al {{ reservation.check_out_date }}</p>
       <p><strong>Estado:</strong> {{ reservation.status }}</p>
+      
+      <p v-if="reservation.actual_check_in"><strong>Ingreso Real:</strong> {{ formatDate(reservation.actual_check_in) }}</p>
+      <p v-if="reservation.actual_check_out"><strong>Salida Real:</strong> {{ formatDate(reservation.actual_check_out) }}</p>
 
       <router-link
-  :to="{ name: 'VerCuenta', params: { id: reservation.id } }"
-  class="bill-button"
->
-  Ver Cuenta
-</router-link>
+        :to="{ name: 'VerCuenta', params: { id: reservation.id } }"
+        class="bill-button"
+      >
+        Ver Cuenta
+      </router-link>
 
-         
-   <div class="actions-section" v-if="reservation.status === 'Pendiente'">
-      <button @click="handleConfirm" class="confirm-button">Confirmar Reserva</button>
-      <button @click="handleCancel" class="cancel-button">Cancelar Reserva</button>
-    </div>
+      <div class="actions-section" v-if="reservation.status === 'Pendiente'">
+        <button @click="handleConfirm" class="confirm-button">Confirmar Reserva</button>
+        <button @click="handleCancel" class="cancel-button">Cancelar Reserva</button>
+      </div>
+      
+      <div class="actions-section" v-if="reservation.status === 'Confirmada' && !reservation.actual_check_in">
+        <button @click="handleCheckin" class="checkin-button">Realizar Check-in</button>
+        <button @click="handleCancel" class="cancel-button">Cancelar Reserva</button>
+      </div>
 
-    <div class="checkout-section" v-if="reservation.status === 'Confirmada'">
-      <button @click="handleCancel" class="cancel-button">Cancelar Reserva</button>
-      <button @click="handleCheckout" class="checkout-button">Realizar Check-out</button>
-    </div>
-    
+      <div class="actions-section" v-if="reservation.status === 'Confirmada' && reservation.actual_check_in">
+        <button @click="handleCheckout" class="checkout-button">Realizar Check-out</button>
+      </div>
 
       <hr>
 
@@ -59,7 +65,6 @@
         <li v-if="sales.length === 0">No hay consumos registrados para esta reserva.</li>
       </ul>
     </div>
-    
   </div>
 </template>
 
@@ -79,7 +84,7 @@ const formError = ref(null);
 const newSale = ref({
   inventory_item_id: "",
   quantity_sold: 1,
-  reservation_id: route.params.id // El ID de la reserva viene de la URL
+  reservation_id: route.params.id
 });
 
 const loadData = async () => {
@@ -90,7 +95,6 @@ const loadData = async () => {
     const [resResponse, invResponse, salesResponse] = await Promise.all([
       apiClient.get(`reservations/${reservationId}/`),
       apiClient.get('inventory/'),
-      // La URL debe ser así para que coincida con el backend
       apiClient.get(`sales/?reservation=${reservationId}`)
     ]);
     reservation.value = resResponse.data;
@@ -110,7 +114,7 @@ const addSale = async () => {
     await apiClient.post('sales/', newSale.value);
     newSale.value.inventory_item_id = "";
     newSale.value.quantity_sold = 1;
-    await loadData(); // Recarga todo para ver la nueva venta y el stock actualizado
+    await loadData();
   } catch (err) {
     formError.value = err.response?.data?.error || "Error al registrar la venta.";
     console.error(err);
@@ -141,64 +145,60 @@ const handleCancel = async () => {
   }
 };
 
+// NUEVA FUNCIÓN PARA EL CHECK-IN
+const handleCheckin = async () => {
+  if (!reservation.value) return;
+  if (confirm("¿Realizar el check-in para esta reserva ahora?")) {
+    try {
+      await apiClient.post(`reservations/${reservation.value.id}/checkin/`);
+      await loadData();
+    } catch (err) {
+      console.error("Error al realizar el check-in:", err.response.data);
+      alert("Hubo un error al realizar el check-in.");
+    }
+  }
+};
 
 const handleCheckout = async () => {
   if (!reservation.value) return;
-
-  // Pide confirmación al usuario
   if (confirm("¿Estás seguro de que quieres realizar el check-out para esta reserva?")) {
     try {
-      // Llama a la acción 'checkout' de la API
       await apiClient.post(`reservations/${reservation.value.id}/checkout/`);
-      // Recarga los datos para ver el estado actualizado
       await loadData();
     } catch (err) {
-      console.error("Error al realizar el check-out:", err);
+      console.error("Error al realizar el check-out:", err.response.data);
       alert("Hubo un error al realizar el check-out.");
     }
   }
+};
+
+const formatDate = (value) => {
+  if (!value) return '';
+  return new Date(value).toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' });
 };
 
 onMounted(loadData);
 </script>
 
 <style scoped>
-/* ... (estilos existentes) ... */
-.bill-button {
-  display: inline-block;
-  margin-top: 1rem;
+/* ... tus estilos existentes ... */
+.bill-button, .checkin-button, .confirm-button, .cancel-button, .checkout-button {
+  border: none;
   padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
   border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  display: inline-block;
 }
-.checkout-section {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background-color: #f7f7f7;
-    border-radius: 8px;
-}
-.checkout-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-.checkout-button:hover {
-    background-color: #218838;
-}
-
-.actions-section {
+.actions-section, .checkout-section {
   margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
   display: flex;
   gap: 1rem;
 }
-.confirm-button { background-color: #007bff; color: white; /*...*/ }
-.confirm-button:hover { background-color: #0056b3; }
-.cancel-button { background-color: #dc3545; color: white; /*...*/ }
-.cancel-button:hover { background-color: #c82333; }
+.checkin-button { background-color: #17a2b8; }
+.checkin-button:hover { background-color: #117a8b; }
 </style>
