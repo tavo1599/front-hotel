@@ -26,6 +26,10 @@
         <label>Fecha de Check-out:</label>
         <input type="date" v-model="newReservation.check_out_date" required>
       </div>
+      <div class="form-group">
+          <label>Precio Especial (Opcional):</label>
+          <input type="number" step="0.01" v-model="newReservation.override_price" placeholder="Dejar en blanco para precio normal" />
+        </div>
       <button type="submit">Crear Reserva</button>
     </form>
     <p v-if="formError" style="color: red;">{{ formError }}</p>
@@ -61,7 +65,8 @@ const newReservation = ref({
   guest_id: null,
   room_id: null,
   check_in_date: '',
-  check_out_date: ''
+  check_out_date: '',
+  override_price: null // <-- Añadir
 });
 
 const availableRooms = computed(() => {

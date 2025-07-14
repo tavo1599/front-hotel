@@ -1,83 +1,100 @@
 <template>
-  <div id="app">
-    <nav v-if="authStore.isAuthenticated">
-      <router-link to="/dashboard">Dashboard</router-link> |
-      <router-link to="/check-in">Check-in Directo</router-link> |
-      <router-link to="/habitaciones">Habitaciones</router-link> |
-      <router-link to="/huespedes">Huéspedes</router-link> |
-      <router-link to="/reservas">Reservas</router-link> |
-      <router-link to="/inventario">Inventario</router-link> |
-      <router-link to="/limpieza">Limpieza</router-link> |
-      <router-link to="/personal">Personal</router-link>
-      
-      <button @click="handleLogout" class="logout-button">Cerrar Sesión</button>
-    </nav>
-    <main>
-      <h1 v-if="route.name !== 'Login'">Sistema de Gestión Hotelera</h1>
-      <router-view/>
-    </main>
-  </div>
+  <router-view />
 </template>
 
-<script setup>
-import { useAuthStore } from '@/stores/auth';
-import { useRouter, useRoute } from 'vue-router';
-
-const authStore = useAuthStore();
-const router = useRouter();
-const route = useRoute(); // Para saber en qué ruta estamos
-
-const handleLogout = () => {
-  authStore.logout();
-  router.push('/login');
-};
-</script>
-
 <style>
+/* --- ESTILOS GLOBALES Y VARIABLES --- */
+:root {
+  --color-primario: #007bff;
+  --color-fondo: #f4f7f9;
+  --color-superficie: #ffffff;
+  --color-texto: #333333;
+  --color-borde: #dee2e6;
+  --sombra-caja: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --radio-borde: 8px;
+}
+
+/* Reset simple y configuración de fuente */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: sans-serif;
-  background-color: #f4f4f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.6;
 }
-#app {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+
+/* --- ESTILOS DEL LAYOUT PRINCIPAL --- */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-nav {
-  background-color: #333;
-  padding: 1rem;
-  text-align: center;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+
+.main-nav {
+  background-color: var(--color-superficie);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--color-borde);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  box-shadow: var(--sombra-caja);
 }
-nav a {
-  color: white;
+
+.main-nav a {
   text-decoration: none;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
+  color: #555;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s;
 }
-nav a.router-link-exact-active {
-  background-color: #555;
-  border-radius: 5px;
+
+.main-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-primario);
+  transition: width 0.3s;
 }
-main {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+.main-nav a:hover,
+.main-nav a.router-link-exact-active {
+  color: var(--color-primario);
 }
-/* Estilo para el nuevo botón */
+
+.main-nav a.router-link-exact-active::after {
+  width: 100%;
+}
+
 .logout-button {
   margin-left: auto; /* Empuja el botón a la derecha */
   background-color: #dc3545;
   color: white;
   border: none;
   padding: 8px 15px;
-  border-radius: 5px;
+  border-radius: var(--radio-borde);
   cursor: pointer;
   font-weight: bold;
 }
+
 .logout-button:hover {
   background-color: #c82333;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 </style>

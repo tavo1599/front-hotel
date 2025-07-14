@@ -22,16 +22,34 @@
 
     <div v-if="selectedRoom" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
-        <h3>Registrar Huésped en Habitación {{ selectedRoom.room_number }}</h3>
+        <h3>Registrar en Habitación {{ selectedRoom.room_number }}</h3>
+        
+        <div class="form-group">
+          <label>Buscar Huésped Existente (por nombre o DNI):</label>
+          <input v-model="searchQuery" @input="searchGuests" placeholder="Escribe para buscar..." />
+          <ul v-if="searchResults.length > 0" class="search-results">
+            <li v-for="guest in searchResults" :key="guest.id" @click="selectExistingGuest(guest)">
+              {{ guest.first_name }} {{ guest.last_name }} - {{ guest.dni }}
+            </li>
+          </ul>
+        </div>
+        
         <form @submit.prevent="occupyRoom">
-          <h4>Datos del Huésped</h4>
-          <input v-model="guestDetails.first_name" placeholder="Nombres" required />
-          <input v-model="guestDetails.last_name" placeholder="Apellidos" required />
-          <input v-model="guestDetails.dni" placeholder="DNI" required />
-          <input v-model="guestDetails.phone_number" placeholder="Teléfono (Opcional)" />
+          <div v-if="!selectedGuest.id">
+            <h4>O Registrar Nuevo Huésped</h4>
+            <input v-model="guestDetails.first_name" placeholder="Nombres" required />
+            <input v-model="guestDetails.last_name" placeholder="Apellidos" required />
+            <input v-model="guestDetails.dni" placeholder="DNI" required />
+            <input v-model="guestDetails.phone_number" placeholder="Teléfono (Opcional)" />
+          </div>
+          <div v-else class="selected-guest">
+            <p>Huésped Seleccionado: <strong>{{ selectedGuest.name }}</strong></p>
+          </div>
+
           <h4>Fechas de Estancia</h4>
           <input v-model="stayDetails.check_in_date" type="date" required />
           <input v-model="stayDetails.check_out_date" type="date" required />
+          <input v-model="stayDetails.override_price" type="number" step="0.01" placeholder="Precio Especial (Opcional)" />
 
           <div class="modal-actions">
             <button type="button" @click="closeModal">Cancelar</button>
@@ -46,9 +64,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import apiClient from '@/api'; // Lo usamos solo para el GET inicial
-import axios from 'axios'; // Importamos axios directamente para el POST
-import { useAuthStore } from '@/stores/auth'; // Importamos el store para el token
+import apiClient from '@/api';
+import { useAuthStore } from '@/stores/auth';
+import axios from 'axios';
 
 const availableRooms = ref([]);
 const loading = ref(true);
@@ -58,6 +76,11 @@ const formError = ref(null);
 const selectedRoom = ref(null);
 const guestDetails = ref({});
 const stayDetails = ref({});
+
+// Nuevas variables para la búsqueda
+const searchQuery = ref('');
+const searchResults = ref([]);
+const selectedGuest = ref({});
 
 const fetchAvailableRooms = async () => {
   loading.value = true;
@@ -73,32 +96,61 @@ const fetchAvailableRooms = async () => {
 };
 
 const selectRoom = (room) => {
+  // Resetea todo al seleccionar una nueva habitación
   selectedRoom.value = room;
-  stayDetails.value.check_in_date = new Date().toISOString().split('T')[0];
+  stayDetails.value = { check_in_date: new Date().toISOString().split('T')[0], check_out_date: '', override_price: null };
   guestDetails.value = { first_name: '', last_name: '', dni: '', phone_number: '' };
+  selectedGuest.value = {};
+  searchQuery.value = '';
+  searchResults.value = [];
 };
 
 const closeModal = () => {
   selectedRoom.value = null;
 };
 
+const searchGuests = async () => {
+  if (searchQuery.value.length < 2) {
+    searchResults.value = [];
+    return;
+  }
+  try {
+    const response = await apiClient.get(`guests/?search=${searchQuery.value}`);
+    searchResults.value = response.data;
+  } catch (err) {
+    console.error("Error buscando huéspedes:", err);
+  }
+};
+
+const selectExistingGuest = (guest) => {
+  selectedGuest.value = { id: guest.id, name: `${guest.first_name} ${guest.last_name}` };
+  // Limpia el formulario de nuevo huésped y la búsqueda
+  guestDetails.value = { first_name: '', last_name: '', dni: '', phone_number: '' };
+  searchQuery.value = '';
+  searchResults.value = [];
+};
+
 const occupyRoom = async () => {
   if (!selectedRoom.value) return;
   formError.value = null;
 
-  const payload = { ...guestDetails.value, ...stayDetails.value };
+  // El payload ahora puede contener un ID de huésped o los detalles de uno nuevo
+  const payload = {
+    ...stayDetails.value,
+    ...(selectedGuest.value.id ? { guest_id: selectedGuest.value.id } : guestDetails.value)
+  };
+
   const authStore = useAuthStore();
   const token = authStore.token;
 
   try {
-    // Correctly call axios.post with the data and then the config object
     await axios.post(
       `http://127.0.0.1:8000/api/rooms/${selectedRoom.value.id}/occupy/`,
-      payload, // The data comes second
-      { // The config object with headers comes third
+      payload,
+      {
         headers: {
           'Authorization': `Token ${token}`,
-          'Content-Type': 'application/json' // Explicitly set the content type
+          'Content-Type': 'application/json'
         }
       }
     );

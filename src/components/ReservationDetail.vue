@@ -181,7 +181,23 @@ onMounted(loadData);
 </script>
 
 <style scoped>
-/* ... tus estilos existentes ... */
+.form-group {
+  margin-bottom: 1rem;
+}
+hr {
+  margin: 2rem 0;
+}
+/* Estilos para el contenedor de botones */
+.actions-section, .checkout-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Estilo base para todos los botones de acción */
 .bill-button, .checkin-button, .confirm-button, .cancel-button, .checkout-button {
   border: none;
   padding: 10px 15px;
@@ -191,14 +207,22 @@ onMounted(loadData);
   text-decoration: none;
   color: white;
   display: inline-block;
+  transition: background-color 0.2s;
 }
-.actions-section, .checkout-section {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
-  display: flex;
-  gap: 1rem;
-}
+
+/* Colores específicos para cada botón */
+.bill-button { background-color: #6c757d; }
+.bill-button:hover { background-color: #5a6268; }
+
+.confirm-button { background-color: #007bff; }
+.confirm-button:hover { background-color: #0056b3; }
+
+.cancel-button { background-color: #dc3545; }
+.cancel-button:hover { background-color: #c82333; }
+
 .checkin-button { background-color: #17a2b8; }
 .checkin-button:hover { background-color: #117a8b; }
+
+.checkout-button { background-color: #28a745; }
+.checkout-button:hover { background-color: #218838; }
 </style>
