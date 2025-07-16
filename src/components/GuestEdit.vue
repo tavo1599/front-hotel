@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Editar Huésped</h2>
+    <h2>Editar Huéspedfd</h2>
     <form v-if="guest" @submit.prevent="updateGuest">
       <div class="form-group">
         <label>Nombres:</label>

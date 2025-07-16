@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuthStore } from './stores/auth';
 
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/'
+  baseURL: 'https://hotel-api-j309.onrender.com'
 });
 
 // Interceptor para añadir el token a cada petición

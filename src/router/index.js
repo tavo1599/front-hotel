@@ -7,8 +7,6 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import LoginPage from '../components/LoginPage.vue'; // O la ruta correcta a tu componente
 import DashboardView from '../components/DashboardView.vue';
 import RoomList from '../components/RoomList.vue';
-import RoomForm from '../components/RoomForm.vue';
-import RoomEdit from '../components/RoomEdit.vue';
 import GuestManager from '../components/GuestManager.vue';
 import GuestEdit from '../components/GuestEdit.vue';
 import GuestHistory from '../components/GuestHistory.vue';
@@ -19,6 +17,7 @@ import DirectCheckIn from '../components/DirectCheckIn.vue';
 import InventoryManager from '../components/InventoryManager.vue';
 import HousekeepingTasks from '../components/HousekeepingTasks.vue';
 import StaffManager from '../components/StaffManager.vue';
+import ReservationCalendar from '../components/ReservationCalendar.vue';
 
 const routes = [
   // 1. Ruta para el Login, está fuera del layout principal
@@ -38,8 +37,6 @@ const routes = [
       { path: '', redirect: '/dashboard' }, // Redirige la raíz al dashboard
       { path: 'dashboard', name: 'Dashboard', component: DashboardView },
       { path: 'habitaciones', name: 'Habitaciones', component: RoomList },
-      { path: 'habitaciones/nueva', name: 'NuevaHabitacion', component: RoomForm },
-      { path: 'habitaciones/:id/editar', name: 'EditarHabitacion', component: RoomEdit },
       { path: 'huespedes', name: 'Huespedes', component: GuestManager },
       { path: 'huespedes/:id/editar', name: 'EditarHuesped', component: GuestEdit },
       { path: 'huespedes/:id/historial', name: 'HistorialHuesped', component: GuestHistory },
@@ -50,6 +47,7 @@ const routes = [
       { path: 'inventario', name: 'Inventario', component: InventoryManager },
       { path: 'limpieza', name: 'Limpieza', component: HousekeepingTasks },
       { path: 'personal', name: 'Personal', component: StaffManager },
+      { path: '/calendario', name: 'Calendario', component: ReservationCalendar, meta: { requiresAuth: true } },
     ],
   },
 ];

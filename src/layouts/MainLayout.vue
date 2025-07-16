@@ -11,6 +11,7 @@
         <router-link to="/dashboard"><i class="ri-dashboard-line icon"></i><span v-show="isSidebarOpen">Dashboard</span></router-link>
         <router-link to="/check-in"><i class="ri-login-box-line icon"></i><span v-show="isSidebarOpen">Check-in Directo</span></router-link>
         <router-link to="/reservas"><i class="ri-calendar-check-line icon"></i><span v-show="isSidebarOpen">Reservas</span></router-link>
+        <router-link to="/calendario"><i class="ri-calendar-view icon"></i><span v-show="isSidebarOpen">Calendario</span></router-link>
         <router-link to="/habitaciones"><i class="ri-hotel-bed-line icon"></i><span v-show="isSidebarOpen">Habitaciones</span></router-link>
         <router-link to="/huespedes"><i class="ri-group-line icon"></i><span v-show="isSidebarOpen">Huéspedes</span></router-link>
         <router-link to="/inventario"><i class="ri-archive-drawer-line icon"></i><span v-show="isSidebarOpen">Inventario</span></router-link>
@@ -47,12 +48,16 @@
       </footer>
     </div>
   </div>
+  <div class="main-layout" :class="{ 'sidebar-collapsed': !isSidebarOpen }">
+    <NotificationDisplay />
+  </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import NotificationDisplay from '@/components/NotificationDisplay.vue';
 
 
 const isSidebarOpen = ref(true);
@@ -153,8 +158,9 @@ const handleLogout = () => {
 }
 
 .main-content {
-  flex-grow: 1; /* Empuja el footer hacia abajo */
+  flex-grow: 1;
   padding: 2rem;
+  width: 100%;
 }
 
 .main-footer {
