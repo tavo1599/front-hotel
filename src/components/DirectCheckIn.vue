@@ -219,6 +219,7 @@ const occupyRoom = async () => {
   }
 };
 
+
 onMounted(fetchAvailableRooms);
 </script>
 

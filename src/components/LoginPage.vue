@@ -22,7 +22,7 @@
     </footer>
 
     <div class="version-tag">
-      v1.0.0
+      v1.8.0
     </div>
   </div>
 </template>
