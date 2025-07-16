@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import apiClient from '@/api';
 
 const availableRooms = ref([]);
