@@ -17,6 +17,13 @@
         <router-link to="/inventario"><i class="ri-archive-drawer-line icon"></i><span v-show="isSidebarOpen">Inventario</span></router-link>
         <router-link to="/limpieza"><i class="ri-brush-line icon"></i><span v-show="isSidebarOpen">Limpieza</span></router-link>
         <router-link to="/personal"><i class="ri-admin-line icon"></i><span v-show="isSidebarOpen">Personal</span></router-link>
+        <div v-if="authStore.isSuperuser" class="superadmin-menu">
+    <div class="menu-divider">SUPERADMIN</div>
+    <router-link to="/superadmin/hoteles">
+      <i class="ri-building-4-line icon"></i>
+      <span v-show="isSidebarOpen">Gestionar Hoteles</span>
+    </router-link>
+  </div>
       </nav>
       <div class="sidebar-footer">
         <div class="user-profile">
@@ -79,6 +86,14 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
+.superadmin-menu { margin-top: 1rem; }
+.menu-divider {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #64748b;
+  text-transform: uppercase;
+}
 /* Estilos del Layout Principal */
 .main-layout {
   display: flex;
