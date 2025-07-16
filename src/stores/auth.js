@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(username, password) {
       try {
-        const apiUrl = `${process.env.VUE_APP_API_BASE_URL}/api-token-auth/`;
+        const apiUrl = `https://hotel-api-j309.onrender.com/api-token-auth/`;
         const response = await axios.post(apiUrl, {
           username: username,
           password: password
