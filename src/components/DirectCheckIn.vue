@@ -210,16 +210,7 @@ const occupyRoom = async () => {
   const token = authStore.token;
 
   try {
-    await axios.post(
-      `http://127.0.0.1:8000/api/rooms/${selectedRoom.value.id}/occupy/`,
-      payload,
-      {
-        headers: {
-          'Authorization': `Token ${token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
     closeModal();
     await fetchAvailableRooms();
   } catch (err) {
