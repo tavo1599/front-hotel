@@ -94,7 +94,6 @@
 import { ref, onMounted } from 'vue';
 import apiClient from '@/api';
 import { useAuthStore } from '@/stores/auth';
-import axios from 'axios';
 
 const availableRooms = ref([]);
 const loading = ref(true);
@@ -206,11 +205,11 @@ const occupyRoom = async () => {
     ...(selectedGuest.value.id ? { guest_id: selectedGuest.value.id } : guestDetails.value)
   };
 
-  const authStore = useAuthStore();
-  const token = authStore.token;
-
   try {
+    // Ya no necesitas 'authStore' ni 'token' aquí.
+    // apiClient se encarga de todo automáticamente.
     await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
+    
     closeModal();
     await fetchAvailableRooms();
   } catch (err) {
