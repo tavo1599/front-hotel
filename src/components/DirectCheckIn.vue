@@ -93,6 +93,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import apiClient from '@/api';
+import { useNotificationStore } from '@/stores/notification';
+const notificationStore = useNotificationStore();
 
 const availableRooms = ref([]);
 const loading = ref(true);
@@ -209,14 +211,18 @@ const occupyRoom = async () => {
   };
 
   try {
-    // Usamos apiClient, que ya tiene la URL de producción correcta
+    // La clave está aquí: usamos apiClient, que ya tiene la URL base 
+    // y el token configurados de forma centralizada y consistente.
     await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
-
+    
     closeModal();
     await fetchAvailableRooms();
-    // Añadir notificación de éxito aquí si quieres
+    // Podrías añadir una notificación de éxito aquí.
+    notificationStore.addNotification({ message: 'Check-in realizado con éxito', type: 'success' });
+
   } catch (err) {
     formError.value = err.response?.data?.error || "Error al realizar el check-in.";
+    notificationStore.addNotification({ message: formError.value, type: 'error' });
     console.error(err);
   }
 };
