@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(username, password) {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api-token-auth/', {
+        const response = await axios.post('https://hotel-api-j309.onrender.com/api-token-auth/', {
           username: username,
           password: password
         });
