@@ -209,12 +209,12 @@ const occupyRoom = async () => {
   };
 
   try {
-    // Ahora usamos apiClient, que ya tiene la URL base y el token correctos
+    // Usamos apiClient, que ya tiene la URL de producción correcta
     await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
 
     closeModal();
     await fetchAvailableRooms();
-    // Aquí podrías añadir una notificación de éxito
+    // Añadir notificación de éxito aquí si quieres
   } catch (err) {
     formError.value = err.response?.data?.error || "Error al realizar el check-in.";
     console.error(err);
