@@ -51,7 +51,7 @@
       </main>
       <footer class="main-footer">
         &copy; {{ currentYear }} Manis'dev. Todos los derechos reservados.
-        <span class="version-tag">v1.0.0</span>
+        <span class="version-tag">v1.5.0</span>
       </footer>
     </div>
   </div>
