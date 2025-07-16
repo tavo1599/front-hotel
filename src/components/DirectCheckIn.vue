@@ -93,7 +93,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import apiClient from '@/api';
-import { useAuthStore } from '@/stores/auth';
 
 const availableRooms = ref([]);
 const loading = ref(true);
