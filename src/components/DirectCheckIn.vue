@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import apiClient from '@/api';
 
 const availableRooms = ref([]);
@@ -139,6 +139,7 @@ const fetchDniData = async () => {
   }
 };
 
+// Funciones
 const fetchAvailableRooms = async () => {
   loading.value = true;
   try {
@@ -146,7 +147,6 @@ const fetchAvailableRooms = async () => {
     availableRooms.value = response.data;
   } catch (err) {
     error.value = "Error al cargar las habitaciones disponibles.";
-    console.error(err);
   } finally {
     loading.value = false;
   }
@@ -154,7 +154,12 @@ const fetchAvailableRooms = async () => {
 
 const selectRoom = (room) => {
   selectedRoom.value = room;
-  stayDetails.value = { check_in_date: new Date().toISOString().split('T')[0], check_out_date: '', override_price: null, is_paid: false };
+  stayDetails.value = { 
+    check_in_date: new Date().toISOString().split('T')[0], 
+    check_out_date: '', 
+    override_price: null,
+    is_paid: false 
+  };
   guestDetails.value = { first_name: '', last_name: '', dni: '', phone_number: '' };
   selectedGuest.value = {};
   searchQuery.value = '';
@@ -165,7 +170,6 @@ const closeModal = () => {
   selectedRoom.value = null;
 };
 
-// Nueva función para obtener el ícono correcto
 const getRoomIcon = (roomType) => {
   switch (roomType) {
     case 'Sencilla': return 'ri-user-line';
@@ -205,12 +209,12 @@ const occupyRoom = async () => {
   };
 
   try {
-    // Ya no necesitas 'authStore' ni 'token' aquí.
-    // apiClient se encarga de todo automáticamente.
+    // Ahora usamos apiClient, que ya tiene la URL base y el token correctos
     await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
-    
+
     closeModal();
     await fetchAvailableRooms();
+    // Aquí podrías añadir una notificación de éxito
   } catch (err) {
     formError.value = err.response?.data?.error || "Error al realizar el check-in.";
     console.error(err);
