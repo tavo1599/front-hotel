@@ -211,8 +211,10 @@ const occupyRoom = async () => {
   };
 
   try {
+    print("llego.................Ga")
     // Usamos apiClient para que tome la URL de producción automáticamente
     await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
+    
     
     closeModal();
     await fetchAvailableRooms();
