@@ -19,6 +19,7 @@ import HousekeepingTasks from '../components/HousekeepingTasks.vue';
 import StaffManager from '../components/StaffManager.vue';
 import ReservationCalendar from '../components/ReservationCalendar.vue';
 import SuperadminHotels from '../components/SuperadminHotels.vue';
+import SuperadminProducts from '../components/SuperadminProducts.vue';
 
 const routes = [
   // 1. Ruta para el Login, está fuera del layout principal
