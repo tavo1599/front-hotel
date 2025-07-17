@@ -23,6 +23,10 @@
       <i class="ri-building-4-line icon"></i>
       <span v-show="isSidebarOpen">Gestionar Hoteles</span>
     </router-link>
+    <router-link to="/superadmin/productos">
+    <i class="ri-price-tag-3-line icon"></i>
+    <span v-show="isSidebarOpen">Catálogo Productos</span>
+  </router-link>
   </div>
       </nav>
       <div class="sidebar-footer">

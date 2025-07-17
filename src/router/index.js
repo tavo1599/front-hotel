@@ -50,6 +50,7 @@ const routes = [
       { path: 'personal', name: 'Personal', component: StaffManager },
       { path: '/calendario', name: 'Calendario', component: ReservationCalendar, meta: { requiresAuth: true } },
       { path: 'superadmin/hoteles', name: 'SuperadminHoteles', component: SuperadminHotels, meta: { requiresAuth: true, requiresSuperuser: true } },
+      { path: 'superadmin/productos', name: 'SuperadminProductos', component: SuperadminProducts, meta: { requiresAuth: true, requiresSuperuser: true } },
     ],
   },
 ];
