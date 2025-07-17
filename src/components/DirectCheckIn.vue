@@ -211,13 +211,13 @@ const occupyRoom = async () => {
   };
 
   try {
-    print("llego.................Ga")
-    // Usamos apiClient para que tome la URL de producción automáticamente
     await apiClient.post(`rooms/${selectedRoom.value.id}/occupy/`, payload);
     
-    
+    // 1. Cierra el modal
     closeModal();
+    // 2. Actualiza la lista de habitaciones disponibles
     await fetchAvailableRooms();
+    // 3. Muestra la notificación de éxito
     notificationStore.addNotification({ message: 'Check-in realizado con éxito', type: 'success' });
 
   } catch (err) {
