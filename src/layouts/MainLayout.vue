@@ -6,6 +6,7 @@
     <button @click="toggleSidebar" class="toggle-btn desktop-only">
       <i class="ri-menu-line"></i>
     </button>
+    
   </div>
       <nav class="sidebar-nav">
         <router-link to="/dashboard"><i class="ri-dashboard-line icon"></i><span v-show="isSidebarOpen">Dashboard</span></router-link>
@@ -42,6 +43,7 @@
         </div>
       </div>
     </aside>
+    
 
     <div class="content-wrapper">
       <header class="top-bar mobile-only">
@@ -51,6 +53,9 @@
         <h3>HotelSys</h3>
       </header>
       <main class="main-content">
+        <button @click="$router.back()" class="back-btn">
+  <i class="ri-arrow-left-line"></i> Volver
+</button>
         <router-view />
       </main>
       <footer class="main-footer">
@@ -241,5 +246,17 @@ const handleLogout = () => {
     background-color: var(--color-superficie);
     border-bottom: 1px solid var(--color-borde);
   }
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #1a202c;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
 }
 </style>

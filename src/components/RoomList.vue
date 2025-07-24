@@ -15,15 +15,17 @@
         <div class="card-header" :class="`status-${room.status.toLowerCase()}`">
           {{ room.status }}
         </div>
+        <!-- <img v-if="room.image" :src="room.image" class="card-image" alt="Habitación">
+        <div v-else class="card-image-placeholder"><i class="ri-image-off-line"></i></div>-->
         <div class="card-image-placeholder">
-  <i :class="getRoomIcon(room.room_type)" style="font-size: 3rem;"></i>
-</div>
+          <i :class="getRoomIcon(room.room_type)" style="font-size: 3rem;"></i>
+        </div>
         <div class="card-body">
           <h3 class="card-number">Habitación {{ room.room_number }}</h3>
           <p class="card-type">{{ room.room_type }}</p>
           <p class="card-price">${{ room.price_per_night }} / noche</p>
         </div>
-        <div class="card-actions">
+           <div class="card-actions">
           <button @click="openEditModal(room)" class="action-icon-btn" title="Editar Habitación">
             <i class="ri-pencil-line"></i>
           </button>
