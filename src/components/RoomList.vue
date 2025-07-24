@@ -15,8 +15,9 @@
         <div class="card-header" :class="`status-${room.status.toLowerCase()}`">
           {{ room.status }}
         </div>
-        <img v-if="room.image" :src="room.image" class="card-image" alt="Habitación">
-        <div v-else class="card-image-placeholder"><i class="ri-image-off-line"></i></div>
+        <div class="card-image-placeholder">
+  <i :class="getRoomIcon(room.room_type)" style="font-size: 3rem;"></i>
+</div>
         <div class="card-body">
           <h3 class="card-number">Habitación {{ room.room_number }}</h3>
           <p class="card-type">{{ room.room_type }}</p>
@@ -102,6 +103,19 @@ const loadRooms = async () => {
     console.error(err);
   } finally {
     loading.value = false;
+  }
+};
+
+const getRoomIcon = (type) => {
+  switch (type) {
+    case 'Sencilla':
+      return 'ri-hotel-bed-line';
+    case 'Doble':
+      return 'ri-hotel-line';
+    case 'Suite':
+      return 'ri-star-smile-line';
+    default:
+      return 'ri-question-line';
   }
 };
 
